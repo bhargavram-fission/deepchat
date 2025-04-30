@@ -145,6 +145,7 @@ box-shadow: none;
     // Create chat toggle button
     const chatToggle = document.createElement('button');
     chatToggle.id = 'chat-toggle';
+      chatToggle.style.position = "fixed";
     chatToggle.innerHTML = toggleText;
     chatToggle.style.backgroundColor = toggleColor;
     document.body.appendChild(chatToggle);
@@ -152,7 +153,9 @@ box-shadow: none;
     // Create chat container
     const chatContainer = document.createElement('div');
     chatContainer.id = 'chat-container';
+      chatContainer.style.position = "fixed";
     document.body.appendChild(chatContainer);
+applyPositionStyles(position);
 
     // Create chat header
     const chatHeader = document.createElement('div');
@@ -335,19 +338,36 @@ box-shadow: none;
     // Apply styles initially and on resize
     applyMobileStyles();
     window.addEventListener('resize', applyMobileStyles);
-function applyPositionStyles() {
+      
+function applyPositionStyles(position) {
   const positionStyles = {
-    "bottom-right": { bottom: "20px", right: "20px", left: "auto", top: "auto" },
-    "bottom-left": { bottom: "20px", left: "20px", right: "auto", top: "auto" },
-    "top-right": { top: "20px", right: "20px", bottom: "auto", left: "auto" },
-    "top-left": { top: "20px", left: "20px", bottom: "auto", right: "auto" },
+    "bottom-right": {
+      container: { bottom: "100px", right: "4%", top: "auto", left: "auto" },
+      toggle: { bottom: "10%", right: "4%", top: "auto", left: "auto" },
+    },
+    "bottom-left": {
+      container: { bottom: "100px", left: "4%", top: "auto", right: "auto" },
+      toggle: { bottom: "10%", left: "4%", top: "auto", right: "auto" },
+    },
+    "top-left": {
+      container: { top: "100px", left: "4%", bottom: "auto", right: "auto" },
+      toggle: { top: "10%", left: "4%", bottom: "auto", right: "auto" },
+    },
+    "top-right": {
+      container: { top: "100px", right: "4%", bottom: "auto", left: "auto" },
+      toggle: { top: "10%", right: "4%", bottom: "auto", left: "auto" },
+    },
   };
 
   const styles = positionStyles[position] || positionStyles["bottom-right"];
+  
+  // Apply to chat container
+  Object.assign(chatContainer.style, styles.container);
 
-  Object.assign(chatToggle.style, styles);
-  Object.assign(chatContainer.style, styles);
+  // Apply to toggle button
+  Object.assign(toggleButton.style, styles.toggle);
 }
+
 applyPositionStyles();
 
   // Show chat function
