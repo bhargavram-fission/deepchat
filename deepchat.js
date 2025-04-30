@@ -334,12 +334,12 @@ applyPositionStyles();
 function applyPositionStyles() {
   const positionStyles = {
     "bottom-right": {
-      container: { bottom: "100px", right: "4%", top: "auto", left: "auto" },
-      toggle: { bottom: "10%", right: "4%", top: "auto", left: "auto" },
+      container: { bottom: "50px", right: "2%", top: "auto", left: "auto" },
+      toggle: { bottom: "4%", right: "2%", top: "auto", left: "auto" },
     },
     "bottom-left": {
-      container: { bottom: "100px", left: "4%", top: "auto", right: "auto" },
-      toggle: { bottom: "10%", left: "4%", top: "auto", right: "auto" },
+      container: { bottom: "50px", left: "2%", top: "auto", right: "auto" },
+      toggle: { bottom: "4%", left: "2%", top: "auto", right: "auto" },
     },
     "top-left": {
       container: { top: "100px", left: "4%", bottom: "auto", right: "auto" },
