@@ -176,7 +176,7 @@ box-shadow: none;
   `,
          messageStyles= {
               error: {
-      bubble: {backgroundColor: "#ff0000", color": "white, fontSize: "15px"}
+      bubble: {backgroundColor: "#ff0000", color": "#ffffff", fontSize: "15px"}
     },
     default: {
               shared: {bubble: {color: "white"}},
