@@ -334,6 +334,20 @@ box-shadow: none;
     // Apply styles initially and on resize
     applyMobileStyles();
     window.addEventListener('resize', applyMobileStyles);
+function applyPositionStyles() {
+  const positionStyles = {
+    "bottom-right": { bottom: "20px", right: "20px", left: "auto", top: "auto" },
+    "bottom-left": { bottom: "20px", left: "20px", right: "auto", top: "auto" },
+    "top-right": { top: "20px", right: "20px", bottom: "auto", left: "auto" },
+    "top-left": { top: "20px", left: "20px", bottom: "auto", right: "auto" },
+  };
+
+  const styles = positionStyles[position] || positionStyles["bottom-right"];
+
+  Object.assign(chatToggle.style, styles);
+  Object.assign(chatContainer.style, styles);
+}
+applyPositionStyles();
 
   // Show chat function
 function showChat() {
