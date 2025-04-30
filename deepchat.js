@@ -151,6 +151,10 @@ box-shadow: none;
       service: "Unable to connect to server.",
       speechToText: "Voice input failed."
     }
+  },
+          textInputPlaceholder = {
+    text: "Type a message...",
+    style: { color: "#bcbcbc" }
   }
        } = config;
 
@@ -274,8 +278,7 @@ if (avatars) {
           '"paddingRight": "2.4em"' +
         '}' +
       '},' +
-      '"placeholder": {"text": "Type a message...", "style": {"color": "#bcbcbc"}}' +
-    '}');
+      '"placeholder":textInputPlaceholder;
     
     // Submit button styles
     deepChat.setAttribute('submitButtonStyles', '{' +
