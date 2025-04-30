@@ -175,6 +175,9 @@ box-shadow: none;
     }
   `,
          messageStyles= {
+              error: {
+      bubble: {backgroundColor: "#ff0000", color": "white, fontSize: "15px"}
+    },
     default: {
               shared: {bubble: {color: "white"}},
       ai: { bubble: { backgroundColor: "#3cbe3c" } },  
