@@ -275,65 +275,57 @@ applyPositionStyles();
     chatContainer.appendChild(deepChat);
 
     // Functions for responsive styles
-    function applyMobileStyles() {
-      if (window.innerWidth <= 600) {
-        // Mobile-specific styles
-        chatContainer.style.bottom = "0";
-        chatContainer.style.right = "0";
-        chatContainer.style.left = "0";
-        chatContainer.style.width = "100%";
-        chatContainer.style.maxWidth = "100%";
-        chatContainer.style.height = "100%";
-        
-        // Update chat header styles
-        document.querySelector('.chat-header').style.borderTopLeftRadius = "0";
-        document.querySelector('.chat-header').style.borderTopRightRadius = "0";
-        
-        // Update deep-chat inline styles
-        deepChat.style.height = "calc(100% - 52px)";
-        
-        // Update chatStyle attribute
-        const mobileStyles = {
-          backgroundColor: "rgb(255,255,255)",
-          height: "100%",
-          border: "1px solid #ffffff",
-          borderBottomLeftRadius: "0",
-          borderBottomRightRadius: "0",
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-          width: "100%"
-        };
-        
-        deepChat.setAttribute('chatStyle', JSON.stringify(mobileStyles));
-      } else {
-        // Desktop styles
-        chatContainer.style.bottom = "10%";
-        chatContainer.style.right = "4%";
-        chatContainer.style.left = "auto";
-        chatContainer.style.width = "350px";
-        chatContainer.style.maxWidth = "92vw";
-        chatContainer.style.height = "auto";
-        
-        // Reset chat header styles
-        document.querySelector('.chat-header').style.borderTopLeftRadius = "10px";
-        document.querySelector('.chat-header').style.borderTopRightRadius = "10px";
-        
-        // Update deep-chat inline styles
-        deepChat.style.height = "60vh";
-        
-        // Update chatStyle attribute
-        const desktopStyles = {
-          backgroundColor: "rgb(255,255,255)",
-          height: "60vh",
-          border: "1px solid #ffffff",
-          borderBottomLeftRadius: "10px",
-          borderBottomRightRadius: "10px",
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-          width: "100%"
-        };
-        
-        deepChat.setAttribute('chatStyle', JSON.stringify(desktopStyles));
-      }
-    }
+   function applyMobileStyles() {
+  const isMobile = window.innerWidth <= 600;
+  
+  if (isMobile) {
+    chatContainer.style.position = 'fixed';
+    chatContainer.style.top = '0';
+    chatContainer.style.left = '0';
+    chatContainer.style.right = '0';
+    chatContainer.style.bottom = '0';
+    chatContainer.style.width = '100%';
+    chatContainer.style.maxWidth = '100%';
+    chatContainer.style.height = '100%';
+
+    document.querySelector('.chat-header').style.borderTopLeftRadius = "0";
+    document.querySelector('.chat-header').style.borderTopRightRadius = "0";
+
+    deepChat.style.height = "calc(100% - 52px)";
+    deepChat.setAttribute('chatStyle', JSON.stringify({
+      backgroundColor: "rgb(255,255,255)",
+      height: "100%",
+      border: "1px solid #ffffff",
+      borderBottomLeftRadius: "0",
+      borderBottomRightRadius: "0",
+      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+      width: "100%"
+    }));
+  } else {
+    // Only apply size styles, do NOT reset top/bottom/left/right
+    chatContainer.style.width = "350px";
+    chatContainer.style.maxWidth = "92vw";
+    chatContainer.style.height = "auto";
+
+    document.querySelector('.chat-header').style.borderTopLeftRadius = "10px";
+    document.querySelector('.chat-header').style.borderTopRightRadius = "10px";
+
+    deepChat.style.height = "60vh";
+    deepChat.setAttribute('chatStyle', JSON.stringify({
+      backgroundColor: "rgb(255,255,255)",
+      height: "60vh",
+      border: "1px solid #ffffff",
+      borderBottomLeftRadius: "10px",
+      borderBottomRightRadius: "10px",
+      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+      width: "100%"
+    }));
+
+    // 🛠 RE-APPLY POSITIONING HERE!
+    applyPositionStyles();
+  }
+}
+
 
     // Apply styles initially and on resize
     applyMobileStyles();
@@ -372,26 +364,35 @@ applyPositionStyles();
 
   // Show chat function
 function showChat() {
-document.body.classList.add('chat-is-visible');
-applyMobileStyles();
+  document.body.classList.add('chat-is-visible');
+  applyMobileStyles();
 
-// Set initial small bubble look
-chatContainer.style.display = 'flex';
-chatContainer.style.opacity = '0';
-chatContainer.style.transformOrigin = 'bottom right';
-chatContainer.style.transform = 'scale(0)';
-chatContainer.style.borderRadius = '50%';
+  const originMap = {
+    "bottom-right": "bottom right",
+    "bottom-left": "bottom left",
+    "top-left": "top left",
+    "top-right": "top right"
+  };
 
-setTimeout(() => {
-  chatContainer.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease, border-radius 0.4s ease';
-  chatContainer.style.opacity = '1';
-  chatContainer.style.transform = 'scale(1)';
-  chatContainer.style.borderRadius = '10px'; // Becomes rectangular
-  chatContainer.classList.add('show');
-}, 10);
+  const origin = originMap[position] || "bottom right";
+  chatContainer.style.transformOrigin = origin;
 
-chatToggle.style.display = 'none';
+  chatContainer.style.display = 'flex';
+  chatContainer.style.opacity = '0';
+  chatContainer.style.transform = 'scale(0)';
+  chatContainer.style.borderRadius = '50%';
+
+  setTimeout(() => {
+    chatContainer.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease, border-radius 0.4s ease';
+    chatContainer.style.opacity = '1';
+    chatContainer.style.transform = 'scale(1)';
+    chatContainer.style.borderRadius = '10px';
+    chatContainer.classList.add('show');
+  }, 10);
+
+  chatToggle.style.display = 'none';
 }
+
 
 // Hide chat function
 function hideChat() {
