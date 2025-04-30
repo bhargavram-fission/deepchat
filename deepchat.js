@@ -155,7 +155,7 @@ box-shadow: none;
     chatContainer.id = 'chat-container';
       chatContainer.style.position = "fixed";
     document.body.appendChild(chatContainer);
-applyPositionStyles(position);
+applyPositionStyles();
 
     // Create chat header
     const chatHeader = document.createElement('div');
@@ -339,7 +339,7 @@ applyPositionStyles(position);
     applyMobileStyles();
     window.addEventListener('resize', applyMobileStyles);
       
-function applyPositionStyles(position) {
+function applyPositionStyles() {
   const positionStyles = {
     "bottom-right": {
       container: { bottom: "100px", right: "4%", top: "auto", left: "auto" },
