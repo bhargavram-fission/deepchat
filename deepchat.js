@@ -138,7 +138,8 @@ box-shadow: none;
         headerTitle = "Hi There!",
         headerSubTitle = "Welcome to Omada AI",
         headerColor = "#0566ff",
-        toggleColor = "#0566ff"
+        toggleColor = "#0566ff",
+        position = "bottom-right
        } = config;
 
     // Create chat toggle button
