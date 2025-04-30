@@ -176,8 +176,8 @@ box-shadow: none;
   `,
          messageStyles: {
     default: {
-      ai: { bubble: { backgroundColor: "#3cbe3c" } },   // AI message color
-      user: { bubble: { backgroundColor: "#6767ff" } }  // User message color
+      ai: { bubble: { backgroundColor: "#3cbe3c" } },  
+      user: { bubble: { backgroundColor: "#6767ff" } }  
     }
   }
        } = config;
