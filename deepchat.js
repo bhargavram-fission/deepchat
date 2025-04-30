@@ -140,6 +140,7 @@ box-shadow: none;
         headerColor = "#0566ff",
         toggleColor = "#0566ff",
         position = "bottom-right",
+        chatContainerPosition = "bottom-right"
        } = config;
 
     // Create chat toggle button
@@ -332,32 +333,19 @@ applyPositionStyles();
     window.addEventListener('resize', applyMobileStyles);
       
 function applyPositionStyles() {
-  const positionStyles = {
-    "bottom-right": {
-      container: { bottom: "50px", right: "2%", top: "auto", left: "auto" },
-      toggle: { bottom: "4%", right: "2%", top: "auto", left: "auto" },
-    },
-    "bottom-left": {
-      container: { bottom: "50px", left: "2%", top: "auto", right: "auto" },
-      toggle: { bottom: "4%", left: "2%", top: "auto", right: "auto" },
-    },
-    "top-left": {
-      container: { top: "50px", left: "2%", bottom: "auto", right: "auto" },
-      toggle: { top: "4%", left: "2%", bottom: "auto", right: "auto" },
-    },
-    "top-right": {
-      container: { top: "50px", right: "2%", bottom: "auto", left: "auto" },
-      toggle: { top: "4%", right: "2%", bottom: "auto", left: "auto" },
-    },
+ const positionStyles = {
+    "bottom-right": { top: "auto", bottom: "50px", left: "auto", right: "2%" },
+    "bottom-left": { top: "auto", bottom: "50px", left: "2%", right: "auto" },
+    "top-left": { top: "50px", bottom: "auto", left: "2%", right: "auto" },
+    "top-right": { top: "50px", bottom: "auto", right: "2%", left: "auto" },
   };
 
-  const styles = positionStyles[position] || positionStyles["bottom-right"];
-  
-  // Apply to chat container
-  Object.assign(chatContainer.style, styles.container);
 
-  // Apply to toggle button
-  Object.assign(chatToggle.style, styles.toggle);
+  const containerStyles = positionStyles[chatContainerPosition] || positionStyles["bottom-right"];
+  const toggleStyles = positionStyles[position] || positionStyles["bottom-right"];
+
+  Object.assign(chatContainer.style, containerStyles);
+  Object.assign(chatToggle.style, toggleStyles);
 }
 
 applyPositionStyles();
