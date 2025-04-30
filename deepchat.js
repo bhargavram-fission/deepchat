@@ -278,7 +278,7 @@ if (avatars) {
           '"paddingRight": "2.4em"' +
         '}' +
       '},' +
-      '"placeholder":textInputPlaceholder' +
+      '"placeholder":JSON.stringify(textInputPlaceholder)' +
      '}');
     
     // Submit button styles
