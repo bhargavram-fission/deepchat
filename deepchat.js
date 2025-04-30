@@ -342,12 +342,12 @@ function applyPositionStyles() {
       toggle: { bottom: "4%", left: "2%", top: "auto", right: "auto" },
     },
     "top-left": {
-      container: { top: "100px", left: "4%", bottom: "auto", right: "auto" },
-      toggle: { top: "10%", left: "4%", bottom: "auto", right: "auto" },
+      container: { top: "50px", left: "2%", bottom: "auto", right: "auto" },
+      toggle: { top: "4%", left: "2%", bottom: "auto", right: "auto" },
     },
     "top-right": {
-      container: { top: "100px", right: "4%", bottom: "auto", left: "auto" },
-      toggle: { top: "10%", right: "4%", bottom: "auto", left: "auto" },
+      container: { top: "50px", right: "2%", bottom: "auto", left: "auto" },
+      toggle: { top: "4%", right: "2%", bottom: "auto", left: "auto" },
     },
   };
 
