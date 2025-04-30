@@ -143,7 +143,15 @@ box-shadow: none;
         chatContainerPosition = "bottom-right",
           avatars = true,
   customizeAvatarImageForAI = null,
-  customizeAvatarImageForUser = null
+  customizeAvatarImageForUser = null,
+         errorMessages = {
+    displayServiceErrorMessages: false,
+    overrides: {
+      default: "Something went wrong. Please try again.",
+      service: "Unable to connect to server.",
+      speechToText: "Voice input failed."
+    }
+  }
        } = config;
 
     // Create chat toggle button
@@ -244,7 +252,8 @@ if (avatars) {
     
     // Input area style
     deepChat.setAttribute('inputAreaStyle', '{"backgroundColor": "transparent", "borderTop":"1px solid #fdfdfd", "width": "100%"}');
-    
+    deepChat.setAttribute("errorMessages", JSON.stringify(errorMessages));
+
     // Text input style
     deepChat.setAttribute('textInput', '{' +
       '"styles": {' +
