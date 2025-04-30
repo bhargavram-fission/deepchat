@@ -174,6 +174,12 @@ box-shadow: none;
       }
     }
   `,
+         messageStyles: {
+    default: {
+      ai: { bubble: { backgroundColor: "#3cbe3c" } },   // AI message color
+      user: { bubble: { backgroundColor: "#6767ff" } }  // User message color
+    }
+  }
        } = config;
 
     // Create chat toggle button
@@ -301,6 +307,8 @@ if (avatars) {
 };
 
 deepChat.setAttribute('textInput', JSON.stringify(textInputConfig));
+      deepChat.setAttribute('messageStyles', JSON.stringify(messageStyles));
+
 
     
     // Submit button styles
