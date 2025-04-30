@@ -259,27 +259,30 @@ if (avatars) {
     deepChat.setAttribute("errorMessages", JSON.stringify(errorMessages));
 
     // Text input style
-    deepChat.setAttribute('textInput', '{' +
-      '"styles": {' +
-        '"container": {' +
-          '"width": "100%",' +
-          '"margin": "0",' +
-          '"borderTop": "1px solid #eaeaea",' +
-          '"borderBottom": "1px solid white",' +
-          '"borderLeft": "1px solid white",' +
-          '"borderRight": "1px solid white",' +
-          '"boxShadow": "unset"' +
-        '},' +
-        '"text": {' +
-          '"fontSize": "1.05em",' +
-          '"paddingTop": "11px",' +
-          '"paddingBottom": "13px",' +
-          '"paddingLeft": "12px",' +
-          '"paddingRight": "2.4em"' +
-        '}' +
-      '},' +
-      '"placeholder":JSON.stringify(textInputPlaceholder)' +
-     '}');
+    const textInputConfig = {
+  styles: {
+    container: {
+      width: "100%",
+      margin: "0",
+      borderTop: "1px solid #eaeaea",
+      borderBottom: "1px solid white",
+      borderLeft: "1px solid white",
+      borderRight: "1px solid white",
+      boxShadow: "unset"
+    },
+    text: {
+      fontSize: "1.05em",
+      paddingTop: "11px",
+      paddingBottom: "13px",
+      paddingLeft: "12px",
+      paddingRight: "2.4em"
+    }
+  },
+  placeholder: textInputPlaceholder
+};
+
+deepChat.setAttribute('textInput', JSON.stringify(textInputConfig));
+
     
     // Submit button styles
     deepChat.setAttribute('submitButtonStyles', '{' +
