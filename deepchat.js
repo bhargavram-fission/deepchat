@@ -188,12 +188,51 @@ applyPositionStyles();
       </svg>
     `;
     chatHeader.appendChild(chatClose);
-
+const useAvatars = true; // or false
+const useNames = true;   // or false
     // Create deep-chat element with all the styling options from the HTML
     const deepChat = document.createElement('deep-chat');
     deepChat.id = 'chat-element';
     deepChat.setAttribute('avatars', 'true');
-    
+    if (useAvatars) {
+  deepChat.setAttribute("avatars", JSON.stringify({
+    default: {
+      styles: {
+        avatar: { height: "30px", width: "30px" },
+        container: { marginTop: "8px" }
+      }
+    },
+    ai: {
+      src: aiAvatarSrc,
+      styles: { avatar: { marginLeft: "-3px" } }
+    },
+    bob: {
+      src: bobAvatarSrc,
+      styles: { avatar: { borderRadius: "15px" } }
+    }
+  }));
+} else {
+  deepChat.setAttribute("avatars", "false");
+}
+
+if (useNames) {
+  deepChat.setAttribute("names", JSON.stringify({
+    default: {
+      style: {
+        fontSize: "18px",
+        marginTop: "14px",
+        width: "32px"
+      }
+    },
+    ai: { text: "You" },
+    user: { text: "Me" },
+    bob: {
+      style: { color: "green" }
+    }
+  }));
+} else {
+  deepChat.setAttribute("names", "false");
+}
     // Setting inline styles
     deepChat.style.width = '100%';
     deepChat.style.height = 'calc(100% - 52px)';
