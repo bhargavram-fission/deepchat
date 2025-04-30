@@ -365,7 +365,7 @@ function applyPositionStyles() {
   Object.assign(chatContainer.style, styles.container);
 
   // Apply to toggle button
-  Object.assign(toggleButton.style, styles.toggle);
+  Object.assign(chatToggle.style, styles.toggle);
 }
 
 applyPositionStyles();
