@@ -174,8 +174,9 @@ box-shadow: none;
       }
     }
   `,
-         messageStyles: {
+         messageStyles= {
     default: {
+              shared: {bubble: {color: "white"}},
       ai: { bubble: { backgroundColor: "#3cbe3c" } },  
       user: { bubble: { backgroundColor: "#6767ff" } }  
     }
