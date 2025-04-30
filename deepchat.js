@@ -155,7 +155,25 @@ box-shadow: none;
           textInputPlaceholder = {
     text: "Type a message...",
     style: { color: "#bcbcbc" }
-  }
+  },
+        auxiliaryStyle = `
+    ::-webkit-scrollbar {
+      height: 10px;
+      width: 3px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: #3b82f6;
+      border-radius: 5px;
+    }
+    @media screen and (max-width: 768px) {
+      .message-container {
+        max-width: 100% !important;
+      }
+      .message-content {
+        max-width: calc(100% - 20px) !important;
+      }
+    }
+  `,
        } = config;
 
     // Create chat toggle button
@@ -257,6 +275,7 @@ if (avatars) {
     // Input area style
     deepChat.setAttribute('inputAreaStyle', '{"backgroundColor": "transparent", "borderTop":"1px solid #fdfdfd", "width": "100%"}');
     deepChat.setAttribute("errorMessages", JSON.stringify(errorMessages));
+    deepChat.setAttribute('auxiliaryStyle', auxiliaryStyle);
 
     // Text input style
     const textInputConfig = {
@@ -297,25 +316,7 @@ deepChat.setAttribute('textInput', JSON.stringify(textInputConfig));
       '}' +
     '}');
     
-    // Auxiliary style
-    deepChat.setAttribute('auxiliaryStyle', 
-      "::-webkit-scrollbar {" +
-      "  height: 10px;" +
-      "  width: 3px;" +
-      "}" +
-      "::-webkit-scrollbar-thumb {" +
-      "  background-color: #3b82f6;" +
-      "  border-radius: 5px;" +
-      "}" +
-      "@media screen and (max-width: 768px) {" +
-      "  .message-container {" +
-      "    max-width: 100% !important;" +
-      "  }" +
-      "  .message-content {" +
-      "    max-width: calc(100% - 20px) !important;" +
-      "  }" +
-      "}"
-    );
+   
     
     // Connect and intro message
     deepChat.setAttribute('connect', `{"url": "${connectUrl}", "method": "POST"}`);
