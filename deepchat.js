@@ -17,7 +17,7 @@
 
   // Add default styles from the HTML document
   const styleEl = document.createElement('style');
-  styleEl.innerHTML = 
+  styleEl.innerHTML = `
     body {
       font-family: Inter, sans-serif;
       margin: 0;
@@ -127,7 +127,7 @@ box-shadow: none;
       display: none !important;
       pointer-events: none !important;
     }
-  ;
+  `;
   document.head.appendChild(styleEl);
 
   window.initDeepChat = function(config = {}) {
@@ -156,7 +156,7 @@ box-shadow: none;
     text: "Type a message...",
     style: { color: "#bcbcbc" }
   },
-        auxiliaryStyle = 
+        auxiliaryStyle = `
     ::-webkit-scrollbar {
       height: 10px;
       width: 3px;
@@ -173,7 +173,7 @@ box-shadow: none;
         max-width: calc(100% - 20px) !important;
       }
     }
-  ,
+  `,
          messageStyles= {
               error: {
       bubble: {backgroundColor: "#ff0000", color: "#ffffff", fontSize: "15px"}
@@ -225,11 +225,11 @@ applyPositionStyles();
     const chatClose = document.createElement('span');
     chatClose.className = 'chat-close';
     chatClose.id = 'chat-close';
-    chatClose.innerHTML = 
+    chatClose.innerHTML = `
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="6 9 12 15 18 9" />
       </svg>
-    ;
+    `;
     chatHeader.appendChild(chatClose);
  
     // Create deep-chat element with all the styling options from the HTML
@@ -331,8 +331,8 @@ deepChat.setAttribute('textInput', JSON.stringify(textInputConfig));
    
     
     // Connect and intro message
-    deepChat.setAttribute('connect', {"url": "${connectUrl}", "method": "POST"});
-    deepChat.setAttribute('introMessage', {"text": "${introMessage}"});
+    deepChat.setAttribute('connect', `{"url": "${connectUrl}", "method": "POST"}`);
+    deepChat.setAttribute('introMessage', `{"text": "${introMessage}"}`);
     
     chatContainer.appendChild(deepChat);
 
@@ -477,4 +477,4 @@ setTimeout(() => {
       applyMobileStyles: applyMobileStyles
     };
   };
-})(); 
+})();
