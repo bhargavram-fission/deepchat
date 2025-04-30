@@ -190,6 +190,8 @@ applyPositionStyles();
     chatHeader.appendChild(chatClose);
 const useAvatars = true; // or false
 const useNames = true;   // or false
+      const aiAvatarSrc = "https://example.com/ai-avatar.svg"; 
+const bobAvatarSrc = "https://example.com/bob-avatar.png"; 
     // Create deep-chat element with all the styling options from the HTML
     const deepChat = document.createElement('deep-chat');
     deepChat.id = 'chat-element';
