@@ -278,7 +278,8 @@ if (avatars) {
           '"paddingRight": "2.4em"' +
         '}' +
       '},' +
-      '"placeholder":textInputPlaceholder;
+      '"placeholder":textInputPlaceholder' +
+     '}');
     
     // Submit button styles
     deepChat.setAttribute('submitButtonStyles', '{' +
