@@ -1,20 +1,23 @@
 /**
  * Omada Chat Widget - A customizable chat interface for websites
+ * Version: 1.0.0
  * 
  * This script creates a floating chat widget that can be easily integrated into any website.
  * It provides configuration options for appearance, behavior, and connection to backend services.
+ * Supports SSE streaming and can be used with any framework.
  */
 
 (function() {
   // Prevent multiple initializations
-  if (window.DeepChatLoaded) return;
-  window.DeepChatLoaded = true;
+  if (window.OmadaChatLoaded) return;
+  window.OmadaChatLoaded = true;
 
   // Default configuration
   const DEFAULT_CONFIG = {
     toggleText: "💬",
     introMessage: "Chat will attempt to send messages to the server. Type something!",
-    connectUrl: "http://localhost:3000/message",
+    websocket: false,
+    stream: true,
     headerTitle: "Hi There!",
     headerSubTitle: "Welcome to Omada AI",
     headerColor: "#0566ff",
@@ -53,152 +56,146 @@
 
   // Add viewport meta tag for mobile responsiveness
   function addViewportMeta() {
-    const meta = document.createElement('meta');
-    meta.name = "viewport";
-    meta.content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
-    document.head.appendChild(meta);
+    if (!document.querySelector('meta[name="viewport"]')) {
+      const meta = document.createElement('meta');
+      meta.name = "viewport";
+      meta.content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
+      document.head.appendChild(meta);
+    }
   }
 
   // Add default styles
   function addStyles() {
-    const style = document.createElement('style');
-    style.innerHTML = `
-      body {
-        font-family: Inter, sans-serif;
-        margin: 0;
-        padding: 0;
-      }
-      #chat-toggle {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background-color: rgb(5, 102, 255);
-        color: white;
-        border: none;
-        border-radius: 28px;
-        width: 60px;
-        height: 60px;
-        font-size: 24px;
-        cursor: pointer;
-        z-index: 1000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        transition: background-color 0.3s ease;
-      }
+    if (!document.getElementById('omada-chat-styles')) {
+      const style = document.createElement('style');
+      style.id = 'omada-chat-styles';
+      style.innerHTML = `
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+          margin: 0;
+          padding: 0;
+        }
+        #omada-chat-toggle {
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          background-color: rgb(5, 102, 255);
+          color: white;
+          border: none;
+          border-radius: 28px;
+          width: 60px;
+          height: 60px;
+          font-size: 24px;
+          cursor: pointer;
+          z-index: 999999;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+          transition: background-color 0.3s ease;
+        }
 
-      #chat-toggle:hover {
-        background-color: rgb(5, 51, 255);
-      }
+        #omada-chat-toggle:hover {
+          background-color: rgb(5, 51, 255);
+        }
 
-      #chat-toggle:focus,
-      #chat-toggle:focus-visible {
-        outline: none;
-        box-shadow: none;
-      }
+        #omada-chat-toggle:focus,
+        #omada-chat-toggle:focus-visible {
+          outline: none;
+          box-shadow: none;
+        }
 
-      #chat-container {
-        position: fixed;
-        bottom: 10%;
-        right: 4%;
-        display: none;
-        flex-direction: column;
-        z-index: 999;
-        opacity: 0;
-        transform: scale(0.95);
-        transition: opacity 0.3s ease, transform 0.3s ease;
-        width: 350px;
-        max-width: 90vw;
-        border: none;
-      }
+        #omada-chat-container {
+          position: fixed;
+          bottom: 10%;
+          right: 4%;
+          display: none;
+          flex-direction: column;
+          z-index: 999999;
+          opacity: 0;
+          transform: scale(0.95);
+          transition: opacity 0.3s ease, transform 0.3s ease;
+          width: 350px;
+          max-width: 90vw;
+          border: none;
+        }
 
-      #chat-container.show {
-        display: flex;
-        opacity: 1;
-        transform: scale(1);
-      }
+        #omada-chat-container.show {
+          display: flex;
+          opacity: 1;
+          transform: scale(1);
+        }
 
-      .chat-header {
-        background-color: #0566ff;
-        color: white;
-        padding: 12px 16px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 16px;
-        font-weight: 600;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-      }
+        .omada-chat-header {
+          background-color: #0566ff;
+          color: white;
+          padding: 12px 16px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 16px;
+          font-weight: 600;
+          border-top-left-radius: 10px;
+          border-top-right-radius: 10px;
+        }
 
-      .chat-title {
-        flex-grow: 1;
-      }
+        .omada-chat-title {
+          flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+        }
 
-      .chat-close {
-        cursor: pointer;
-        font-size: 24px;
-        color: white !important;
-        margin-left: 10px;
-      }
+        .omada-chat-title span:first-child {
+          font-size: 16px;
+          font-weight: 600;
+        }
 
-      #chat-element {
-        flex-grow: 1;
-        overflow: hidden;
-        width: 100%;
-      }
+        .omada-chat-title span:last-child {
+          font-size: 12px;
+          font-weight: 400;
+          opacity: 0.9;
+        }
 
-      @media screen and (max-width: 578px) {
-        #chat-container {
+        .omada-chat-close {
+          cursor: pointer;
+          font-size: 24px;
+          color: white !important;
+          margin-left: 10px;
+        }
+
+        #omada-chat-element {
+          flex-grow: 1;
+          overflow: hidden;
           width: 100%;
-          height: 100%;
-          max-width: 100%;
-          max-height: 100%;
-          border-radius: 0;
-          bottom: 0;
-          right: 0;
-          top: 0;
-          left: 0;
         }
 
-        .chat-header {
-          border-top-left-radius: 0;
-          border-top-right-radius: 0;
-        }
-      }
-      
-      body.chat-is-visible #chat-toggle {
-        display: none !important;
-        pointer-events: none !important;
-      }
-    `;
-    document.head.appendChild(style);
-  }
+        @media screen and (max-width: 578px) {
+          #omada-chat-container {
+            width: 100%;
+            height: 100%;
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 0;
+            bottom: 0;
+            right: 0;
+            top: 0;
+            left: 0;
+          }
 
-  // Load configuration from remote server
-  window.loadChatConfig = async function(configUrl = 'http://localhost:3000/chat-config') {
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
-      
-      const response = await fetch(configUrl, {
-        signal: controller.signal
-      });
-      clearTimeout(timeoutId);
-      
-      if (!response.ok) {
-        throw new Error('Failed to load chat configuration');
-      }
-      
-      const config = await response.json();
-      console.log('✅ Chat configuration loaded successfully');
-      return config;
-    } catch (error) {
-      console.error('Error loading chat configuration:', error);
-      return null;
+          .omada-chat-header {
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+          }
+        }
+        
+        body.omada-chat-is-visible #omada-chat-toggle {
+          display: none !important;
+          pointer-events: none !important;
+        }
+      `;
+      document.head.appendChild(style);
     }
-  };
+  }
 
   // Position elements based on configured position
   function applyPositionStyles(config) {
@@ -271,7 +268,7 @@
 
   // Animation for showing chat window
   function showChat(config) {
-    document.body.classList.add('chat-is-visible');
+    document.body.classList.add('omada-chat-is-visible');
     applyResponsiveStyles(config);
 
     const originMap = {
@@ -311,7 +308,7 @@
       elements.chatContainer.style.display = 'none';
       elements.chatContainer.classList.remove('show');
       elements.chatToggle.style.display = 'flex';
-      document.body.classList.remove('chat-is-visible');
+      document.body.classList.remove('omada-chat-is-visible');
     }, 500);
   }
 
@@ -319,7 +316,7 @@
   function createChatElements(config) {
     // Create chat toggle button
     const chatToggle = document.createElement('button');
-    chatToggle.id = 'chat-toggle';
+    chatToggle.id = 'omada-chat-toggle';
     chatToggle.style.position = "fixed";
     chatToggle.innerHTML = config.toggleText;
     chatToggle.style.backgroundColor = config.toggleColor;
@@ -327,20 +324,19 @@
 
     // Create chat container
     const chatContainer = document.createElement('div');
-    chatContainer.id = 'chat-container';
+    chatContainer.id = 'omada-chat-container';
     chatContainer.style.position = "fixed";
     document.body.appendChild(chatContainer);
 
     // Create chat header
     const chatHeader = document.createElement('div');
-    chatHeader.className = 'chat-header';
+    chatHeader.className = 'omada-chat-header';
     chatHeader.style.backgroundColor = config.headerColor;
     chatContainer.appendChild(chatHeader);
 
     // Create chat title container
     const chatTitleContainer = document.createElement('div');
-    chatTitleContainer.style.display = 'flex';
-    chatTitleContainer.style.flexDirection = 'column';
+    chatTitleContainer.className = 'omada-chat-title';
     
     const chatTitle1 = document.createElement('span');
     chatTitle1.textContent = config.headerTitle;
@@ -353,8 +349,8 @@
 
     // Create close button with SVG
     const chatClose = document.createElement('span');
-    chatClose.className = 'chat-close';
-    chatClose.id = 'chat-close';
+    chatClose.className = 'omada-chat-close';
+    chatClose.id = 'omada-chat-close';
     chatClose.innerHTML = `
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="6 9 12 15 18 9" />
@@ -364,7 +360,7 @@
  
     // Create deep-chat element
     const deepChat = document.createElement('deep-chat');
-    deepChat.id = 'chat-element';
+    deepChat.id = 'omada-chat-element';
     
     // Save elements for later reference
     elements.chatToggle = chatToggle;
@@ -374,6 +370,20 @@
     elements.deepChat = deepChat;
     
     return deepChat;
+  }
+
+  // Generate the connect URL based on provided credentials
+  function generateConnectUrl(config) {
+    if (config.connectUrl) {
+      return config.connectUrl;
+    }
+    
+    if (config.agentId && config.workspaceId) {
+      const baseUrl = config.baseUrl || "https://ds4i1tjnjs35d.cloudfront.net";
+      return `${baseUrl}/sse/workspaces/${config.workspaceId}/chat-agents/${config.agentId}/chat/stream`;
+    }
+    
+    return null;
   }
 
   // Configure the deep-chat element
@@ -489,79 +499,105 @@
       '}' +
     '}');
     
-    // Connect and intro message
-    deepChat.setAttribute('connect', `{"url": "${config.connectUrl}", "method": "POST"}`);
+    // Generate the connect URL
+    const connectUrl = generateConnectUrl(config);
+    
+    // Set up the request headers for authentication
+    const headers = {};
+    if (config.accessToken) {
+      headers.Authorization = `Bearer ${config.accessToken}`;
+    }
+    
+    // Connect configuration with streaming support
+    const connectConfig = {
+      url: connectUrl,
+      method: "POST",
+      websocket: config.websocket || false,
+      stream: config.stream || true,
+      headers: headers
+    };
+    
+    deepChat.setAttribute('connect', JSON.stringify(connectConfig));
     deepChat.setAttribute('introMessage', `{"text": "${config.introMessage}"}`);
     
     return deepChat;
   }
 
-  // Initialize the chat widget
-  window.initDeepChat = function(userConfig = {}) {
-    // Merge default config with user config
-    const config = { ...DEFAULT_CONFIG, ...userConfig };
-    
-    // Create elements
-    const deepChat = createChatElements(config);
-    
-    // Configure deep-chat
-    configureDeepChat(deepChat, config);
-    
-    // Add deep-chat to the container
-    elements.chatContainer.appendChild(deepChat);
-
-    // Apply initial styles
-    applyPositionStyles(config);
-    applyResponsiveStyles(config);
-    
-    // Set up event listeners
-    elements.chatToggle.addEventListener('click', () => showChat(config));
-    elements.chatClose.addEventListener('click', hideChat);
-    window.addEventListener('resize', () => applyResponsiveStyles(config));
-    
-    // Return public API
-    return {
-      show: () => showChat(config),
-      hide: hideChat,
-      toggle: () => {
-        if (elements.chatContainer.classList.contains('show')) {
-          hideChat();
-        } else {
-          showChat(config);
-        }
-      },
-      updateConfig: (newConfig) => {
-        Object.assign(config, newConfig);
-        applyPositionStyles(config);
-        applyResponsiveStyles(config);
+  // Load deep-chat web component script
+  function loadDeepChatScript() {
+    return new Promise((resolve, reject) => {
+      // Check if already loaded
+      if (window.customElements && window.customElements.get('deep-chat')) {
+        return resolve();
       }
-    };
-  };
-
-  // Auto-initialize function
-  window.autoInitOmadaChat = async function(configUrl = 'http://localhost:3000/chat-config') {
-    // Add viewport meta tag
-    addViewportMeta();
-    
-    // Add default styles
-    addStyles();
-    
-    // Load the deep-chat script
-    const script = document.createElement('script');
-    script.src = 'https://unpkg.com/deep-chat@2.1.1/dist/deepChat.bundle.js';
-    script.type = 'module';
-    script.defer = true;
-    document.body.appendChild(script);
-
-    // Wait for script to load
-    await new Promise((resolve) => {
-      script.onload = resolve;
+      
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/deep-chat@2.1.1/dist/deepChat.bundle.js';
+      script.type = 'module';
+      script.defer = true;
+      
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error('Failed to load deep-chat script'));
+      
+      document.body.appendChild(script);
     });
+  }
 
-    // Load config
-    const config = await window.loadChatConfig(configUrl);
-    
-    // Initialize chat
-    return window.initDeepChat(config || {});
+  // Initialize the chat widget
+  window.OmadaChat = {
+    init: async function(userConfig = {}) {
+      // Load deep-chat script
+      try {
+        await loadDeepChatScript();
+      } catch (error) {
+        console.error('Failed to load deep-chat:', error);
+        return null;
+      }
+      
+      // Add viewport meta tag
+      addViewportMeta();
+      
+      // Add default styles
+      addStyles();
+      
+      // Merge default config with user config
+      const config = { ...DEFAULT_CONFIG, ...userConfig };
+      
+      // Create elements
+      const deepChat = createChatElements(config);
+      
+      // Configure deep-chat
+      configureDeepChat(deepChat, config);
+      
+      // Add deep-chat to the container
+      elements.chatContainer.appendChild(deepChat);
+
+      // Apply initial styles
+      applyPositionStyles(config);
+      applyResponsiveStyles(config);
+      
+      // Set up event listeners
+      elements.chatToggle.addEventListener('click', () => showChat(config));
+      elements.chatClose.addEventListener('click', hideChat);
+      window.addEventListener('resize', () => applyResponsiveStyles(config));
+      
+      // Return public API
+      return {
+        show: () => showChat(config),
+        hide: hideChat,
+        toggle: () => {
+          if (elements.chatContainer.classList.contains('show')) {
+            hideChat();
+          } else {
+            showChat(config);
+          }
+        },
+        updateConfig: (newConfig) => {
+          Object.assign(config, newConfig);
+          applyPositionStyles(config);
+          applyResponsiveStyles(config);
+        }
+      };
+    }
   };
 })();
