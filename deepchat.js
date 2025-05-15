@@ -1,12 +1,3 @@
-/**
- * Omada Chat Widget - A customizable chat interface for websites
- * Version: 1.0.0
- * 
- * This script creates a floating chat widget that can be easily integrated into any website.
- * It provides configuration options for appearance, behavior, and connection to backend services.
- * Supports SSE streaming and can be used with any framework.
- */
-
 (function() {
   // Prevent multiple initializations
   if (window.OmadaChatLoaded) return;
@@ -18,10 +9,10 @@
     introMessage: "Chat will attempt to send messages to the server. Type something!",
     websocket: false,
     stream: true,
-    headerTitle: "Hi There!",
-    headerSubTitle: "Welcome to Omada AI",
-    headerColor: "#0566ff",
-    toggleColor: "#0566ff",
+    headerTitle: "OmadaAI Assistant!",
+    headerSubTitle: "How can I help you?",
+    headerColor: "#0057F3",
+    toggleColor: "#0057F3",
     position: "bottom-right",
     chatContainerPosition: "bottom-right",
     avatars: true,
@@ -45,8 +36,8 @@
       },
       default: {
         shared: {bubble: {color: "white"}},
-        ai: { bubble: { backgroundColor: "#3cbe3c" } },  
-        user: { bubble: { backgroundColor: "#6767ff" } }  
+        ai: { bubble: { backgroundColor: "#F3F5F7",color:'#000000',padding:'10px' } },  
+        user: { bubble: { backgroundColor: "#0057F3" } }  
       }
     }
   };
@@ -243,7 +234,7 @@
       }));
     } else {
       // Standard size on desktop
-      elements.chatContainer.style.width = "350px";
+      elements.chatContainer.style.width = "400px";
       elements.chatContainer.style.maxWidth = "92vw";
       elements.chatContainer.style.height = "auto";
 
